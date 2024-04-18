@@ -8,6 +8,7 @@ print(""" Welcome to the dungeon adventurer! Your goal is to survive through 12 
  
 By going through to the next level you are going to choose one out of three doors. Behind each door there is a chance of finding a monster, falling in a trap or finding a chest with valuable items.""")
 
+
 #  Klasser
 
 
@@ -17,12 +18,20 @@ class character:
         self.stre = stre
         self.lvl = lvl
 
+    def show_stats(self):
+      print("\nYour stats are: ")
+      print("HP:      " , self.hp)
+      print("Strength:" , self.stre)
+      print("Level:   " , self.lvl)
 
 class item:
     def __init__(self, item_name, item_stre, item_hp):
         self.item_name = item_name
         self.item_stre = item_stre
         self.item_hp = item_hp
+
+
+
 
 class monster:
     def __init__(self, monster_name, monster_stre):
@@ -39,6 +48,10 @@ class trap:
 #  Player
 
 player = character(10, 0, 0)
+
+# Backpack / inventory
+
+inventory = ["", "", "", "", ""]
 
 #  Items
 
@@ -81,13 +94,20 @@ traps = [spike_trap, poison_trap, boulder_trap, fall_trap]
 #  Skriva funktioner för vad som händer i varje rum
 #  Skriva funktioner för att kunna visa ryggsäcken och spelarens stats
 #  Skriva felinput hantering
+#  Kolla vs code för lösning på inventory
 
-def stats(hp, stre, lvl):
-    print("\nYour stats are: ")
-    print("HP: " + str(hp))
-    print("Strength: " + str(stre))
-    print("Level: " + str(lvl))
-  
+# Funktionen visar inventory
+
+def show_inventory(inventory):
+  print(f"The items in your backpack are: ")
+  print(inventory[0]) 
+
+# Funktionen byter ut föremål ur backpack
+
+def manage_inventory(item, place):
+  inventory.remove(place)
+  inventory.insert(place, item)
+
 
 
 def monster():
@@ -141,6 +161,8 @@ def random_room():
 
 
 # Kod som kör spelet
+
+player.show_stats()
 
 random_room()
 
