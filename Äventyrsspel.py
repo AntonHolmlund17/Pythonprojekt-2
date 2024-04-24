@@ -51,7 +51,7 @@ player = character(10, 0, 0)
 
 # Backpack / inventory
 
-inventory = ["", "", "", "", ""]
+backpack = ["", "", "", "", ""]
 
 #  Items
 
@@ -61,8 +61,10 @@ axe = item("Axe", 2, 0)
 gold_ring = item("Gold Ring", 1, 1)
 apple = item("Apple", 0, 2)
 cake = item("Cake", 0, 3)
+empty = item("Empty", 0, 0)
 
 items = [stone, sword, axe, gold_ring, apple, cake]
+backpack = [empty, empty, empty, empty, empty,]
 
 #  Monster
 
@@ -98,15 +100,50 @@ traps = [spike_trap, poison_trap, boulder_trap, fall_trap]
 
 # Funktionen visar inventory
 
-def show_inventory(inventory):
-  print(f"The items in your backpack are: ")
-  print(inventory[0]) 
 
-# Funktionen byter ut föremål ur backpack
+def swap(item, slot):
+    backpack.insert(slot, item)
 
-def manage_inventory(item, place):
-  inventory.remove(place)
-  inventory.insert(place, item)
+def pick_up_item(item):
+  print("This is what your backpack currently looks like")
+  show_backpack()
+  print("What slot would you like to put this item in?")
+  slot = int(input(": "))
+  while slot < 1 or slot > 5:
+    print("Please enter a number between 1 and 5")
+    slot = int(input(": "))
+
+  swap(item, slot)
+  
+def show_backpack(): 
+    print("\nNAME      STRE  HP")
+    for n in range(5):
+        print(f"{backpack[n].item_name:12} {backpack[n].item_stre} {backpack[n].item_hp:3}")
+
+
+
+# Funktionen ska fråga vad spelaren vill göra, inventory, backpack eller ett nytt rum. 
+
+def first_choice(): 
+  
+  while True:
+    
+    choice = input("""
+    What do you want to do? 
+    1. Go to the next level 
+    2. Check your stats     
+    3. Look in your backpack
+    
+    Write here: """)
+    
+    if choice == "1" or choice == "next level":
+      return random_room()
+    elif choice == "2" or choice == "stats":
+      return player.show_stats()
+    elif choice == "3" or choice == "backpack": 
+      return show_backpack()
+    else:
+      return print("Wrong input, try again") 
 
 
 
@@ -140,10 +177,22 @@ def trap():
   player.hp -= trap.trap_stre
   print(f"\nYou have {player.hp} health left!")
 
+
 def item():
   item = random.choice(items)
   print(f"\nYou have found a {item.item_name}!")
-
+  
+  while True:
+    choice = input("\nDo you want to pick it up? Yes or No: ")
+    if choice.lower() == "yes":
+      pick_up_item(item)
+    elif choice.lower() == "no":
+      print("\nYou left the item behind.")
+      break
+    else:
+      print("\nWrong input, try again.")
+    
+  
 def room_choice(a):
     if a == 0:
       monster()
@@ -152,19 +201,22 @@ def room_choice(a):
     elif a == 2:
       item()
 
+  
 def random_room():
   room_number = random.randint(0, 3)
-  print("""\nIn front of you there are 3 doors, behind one is a trap, the   other is a chest and behind one door is a monster. 
+  print("""
+  In front of you there are 3 doors, behind one is a trap, the other is a chest and behind     the third door is a monster. 
   Choose between door 1, 2 or 3.""")  
-  door_choice = input("\nWhich door do you choose? ")
+  door_choice = int(input("\nWhich door do you choose? "))
+  if door_choice > 3:
+      print("Wrong input, try again") 
   room_choice(room_number)
 
 
 # Kod som kör spelet
 
-player.show_stats()
+first_choice() 
 
-random_room()
 
 
 
