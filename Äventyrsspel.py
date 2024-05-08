@@ -33,6 +33,7 @@ class item:
         self.item_hp = item_hp
 
 
+
 #  Monster class -----------------------------------
 
 class monster:
@@ -54,11 +55,6 @@ class trap:
 player = character(10, 0, 0)
 
 
-# Backpack / inventory -----------------------
-
-backpack = ["", "", "", "", ""]
-
-
 #  Items -------------------------------------
 
 stone = item("Stone", 1, 0)
@@ -70,7 +66,16 @@ cake = item("Cake", 0, 3)
 empty = item("Empty", 0, 0)
 
 items = [stone, sword, axe, gold_ring, apple, cake]
+
 backpack = [empty, empty, empty, empty, empty,]
+
+def backpack_stre():
+  backpack_stre = 0
+  for n in range(5):
+    backpack[n].item_stre = backpack_stre + backpack[n].item_stre
+  print(backpack_stre)
+  return backpack_stre
+backpack_stre()
 
 
 #  Monster -------------------------------------
@@ -107,27 +112,35 @@ traps = [spike_trap, poison_trap, boulder_trap, fall_trap]
 
 # Funktionen visar inventory
 
-# FUNKAR INTE FIXA DEN
-def swap(item, slot):
-    backpack.remove(slot)
-    backpack.insert(slot, item)
+# Funktionen byter ut items i ryggsäcken
+def swap(a, b):
+    del backpack[b]
+    backpack.insert(b, a)
 
 # Funktion för att plocka upp item från kista och byta ut -------------------
 
 def pick_up_item(item):
-  print("This is what your backpack currently looks like")
   show_backpack()
 
-  print("What slot would you like to put this item in?")
-  slot = int(input(": "))
+  print("\nWhat slot would you like to put this item in?")
 
-  while slot < 1 or slot > 5:
-    print("Please enter a number between 1 and 5")
-    slot = int(input(": "))
+  while True:
+    slot = input(": ")
+    if slot.isnumeric():
+      slot = int(slot)
+      if slot >= 1 and slot <= 5:
+        swap(item, slot-1)  
+        break
+      else:
+        print("\nPlease enter a number between 1 and 5\n")
+    else:
+      print("\nPlease enter a number between 1 and 5\n")
+  
 
-  swap(item, slot-1)
+  
+  
 
-# Funktion för att printa ut backpack  --------------------------------------------------
+# Funktion för att visa backpack  ---------------------------------------
 
 def show_backpack(): 
     print("\nYou take off your backpack and look inside. Inside you see:")
@@ -189,7 +202,7 @@ def monster():
 
   elif player.hp + player.stre <= monster.stre:
     print("\nThe monster defeated you!")
-    player.hp == 0
+    player.hp = 0
 
 
 #  Funktion för att slumpa fälla ------------------
@@ -229,15 +242,15 @@ def item():
 
 def room_choice(a):
     if a == 1:
-      monster()
-    elif a == 2:
       trap()
-    elif a == 3:
+    elif a <= 3:
+      monster()
+    elif a <= 6:
       item()
 
 
 def random_room():
-  room_number = random.randint(1, 3)
+  room_number = random.randint(1, 6)
 
   print("""
   In front of you there are 3 doors, behind one is a trap, the other is a chest and behind the third door is a monster. 
@@ -254,4 +267,7 @@ def random_room():
 # Kod som kör spelet
 
 while True:  
-  first_choice() 
+  first_choice()
+  if player.hp <= 0:
+    print("Skill issue, you lost")
+    break
