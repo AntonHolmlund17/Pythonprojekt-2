@@ -18,10 +18,11 @@ class character:
         self.lvl = lvl
 
     def show_stats(self):
+      player.stre = backpack_stre()
       print("\nYour stats are: ")
-      print("HP:      " , self.hp)
-      print("Strength:" , self.stre)
-      print("Level:   " , self.lvl)
+      print("HP:       " , self.hp)
+      print("Strength: " , self.stre)
+      print("Level:    " , self.lvl)
 
 
 #  Item class ---------------------------------------
@@ -72,8 +73,7 @@ backpack = [empty, empty, empty, empty, empty,]
 def backpack_stre():
   backpack_stre = 0
   for n in range(5):
-    backpack[n].item_stre = backpack_stre + backpack[n].item_stre
-  print(backpack_stre)
+    backpack_stre = backpack_stre + backpack[n].item_stre
   return backpack_stre
 backpack_stre()
 
@@ -86,12 +86,11 @@ goblin = monster("Goblin", 3)
 orc = monster("Orc", 5)
 minotaur = monster("Minotaur", 6)
 giant = monster("Giant", 8)
-dragon = monster("Dragon", 12)
+dragon = monster("Dragon", 10)
 
 early_monsters = [cockroach, bat, goblin]
 middle_monsters = [goblin, orc, minotaur]
 late_monster = [orc, minotaur, giant]
-boss = [dragon]
 
 
 #  Trap ------------------------------------
@@ -122,6 +121,8 @@ def swap(a, b):
 def pick_up_item(item):
   show_backpack()
 
+  player.hp = player.hp + item.item_hp
+  
   print("\nWhat slot would you like to put this item in?")
 
   while True:
@@ -135,6 +136,7 @@ def pick_up_item(item):
         print("\nPlease enter a number between 1 and 5\n")
     else:
       print("\nPlease enter a number between 1 and 5\n")
+  player.stre = backpack_stre()
   
 
   
@@ -182,6 +184,7 @@ def first_choice():
 def monster():
   print(f"\n\n\nYou opened the door and found a monsters nest.") 
 
+  
   if player.lvl <= 4:
     monster = random.choice(early_monsters)
   elif player.lvl <= 8:
@@ -193,16 +196,39 @@ def monster():
   input("\nPress enter to fight!")
 
   if player.stre >= monster.monster_stre:
-    print("\nYou have defeated the monster and didn't lose any health!")
+    print("\nYou have defeated the monster without a sratch!")
 
   elif player.stre < monster.monster_stre:
     print("\nYou have lost some health!")
-    player.hp -= monster.monster_stre - player.stre
-    print(f"\nYou have {player.hp} health left!")
-
+    player.hp = player.hp - monster.monster_stre + player.stre
+    if player.hp > 0:
+      print(f"\nYou have {player.hp} health left") 
+    if player.hp <= 0:
+      print(f"\nYou have 0 health left!")
+    
   elif player.hp + player.stre <= monster.stre:
     print("\nThe monster defeated you!")
     player.hp = 0
+
+#  Funktion för boss fighten -----------------------
+
+def boss_fight():
+  
+  print(f"\nYou have encountered a {dragon.monster_name}!")
+  input("\nPress enter to fight!")
+
+  if player.stre >= dragon.monster_stre:
+    print("\nYou have defeated the boss without a scratch! Wow you are        very strong") 
+    print("\nCongratulations on winning the game!")
+  
+  elif player.stre < dragon.monster_stre:
+    player.hp = player.hp - dragon.monster_stre + player.stre
+    if player.hp <= 0:
+      print(f"\nThe boss defeated you! You were not strong enough to defeat the boss.")
+    print("\nBetter luck next time!")
+  else:
+    print("\nAfter a long and difficult fight you have managed to defeat the boss!")  
+    print("\nCongratulations on winning the game!")
 
 
 #  Funktion för att slumpa fälla ------------------
@@ -213,8 +239,10 @@ def trap():
 
   print(f"\nYou have encountered a {trap.trap_name}!")
   player.hp -= trap.trap_stre
-
-  print(f"\nYou have {player.hp} health left!")
+  if player.hp > 0:
+    print(f"\nYou have {player.hp} health left!")
+  if player.hp <= 0:
+    print(f"\nYou have 0 health left!") 
 
 
 #   Funktion för att slumpa fram ett föremål ------
@@ -249,6 +277,8 @@ def room_choice(a):
       item()
 
 
+#  Funktion som avgör vilket rum som ska öppnas ----------
+
 def random_room():
   room_number = random.randint(1, 6)
 
@@ -266,8 +296,12 @@ def random_room():
 
 # Kod som kör spelet
 
-while True:  
+for round in range(1, 13):
+  player.lvl = round
+  if round > 1:
+    print(f"\n\n\nYou have now reached round {round}! Well done!\n\n")
   first_choice()
   if player.hp <= 0:
-    print("Skill issue, you lost")
-    break
+    print("\nGame over, you lost")
+    exit()
+boss_fight()
