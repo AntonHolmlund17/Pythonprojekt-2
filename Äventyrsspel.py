@@ -59,14 +59,24 @@ player = character(10, 0, 0)
 #  Items -------------------------------------
 
 stone = item("Stone", 1, 0)
-sword = item("Sword", 3, 0)
-axe = item("Axe", 2, 0)
-gold_ring = item("Gold Ring", 1, 1)
+sword = item("Sword", 5, 0)
+axe = item("Axe", 3, 0)
+knife = item( "Knife", 2, 0)
+bow = item( "Arrow and Bow", 3, 0)
+
+talisman = item("Talisman", 1, 3) 
+gold_ring = item("Gold Ring", 2, 2)
+
 apple = item("Apple", 0, 2)
-cake = item("Cake", 0, 3)
+cake = item("Cake", 0, 5)
+sandwich = item("Sandwich", 0, 3)
+
+
+# Placeholder item for backpack ---------------
+
 empty = item("Empty", 0, 0)
 
-items = [stone, sword, axe, gold_ring, apple, cake]
+items = [stone, stone, sword, axe, knife, knife, bow, talisman, gold_ring, apple, cake, sandwich] 
 
 backpack = [empty, empty, empty, empty, empty,]
 
@@ -90,7 +100,7 @@ dragon = monster("Dragon", 10)
 
 early_monsters = [cockroach, bat, goblin]
 middle_monsters = [goblin, orc, minotaur]
-late_monster = [orc, minotaur, giant]
+late_monsters = [orc, minotaur, giant]
 
 
 #  Trap ------------------------------------
@@ -139,9 +149,6 @@ def pick_up_item(item):
   player.stre = backpack_stre()
   
 
-  
-  
-
 # Funktion för att visa backpack  ---------------------------------------
 
 def show_backpack(): 
@@ -150,33 +157,30 @@ def show_backpack():
     for n in range(5):
         print(f"{backpack[n].item_name:12} {backpack[n].item_stre} {backpack[n].item_hp:3}")
 
-    input(f"\nPress enter to continue")
-
-
 
 # Funktionen ska fråga vad spelaren vill göra, inventory, backpack eller ett nytt rum. 
 
 def first_choice(): 
 
-  print("""
+  while True:
+    print("""
 
 
     What do you want to do? 
     1. Go to the next level 
     2. Check your stats     
     3. Look in your backpack""")
-
-  while True:
+    
     choice = input("\nWrite here: ")
 
     if choice == "1" or choice == "next level":
       return random_room()
     elif choice == "2" or choice == "stats":
-      return player.show_stats()
+      player.show_stats()
     elif choice == "3" or choice == "backpack": 
-      return show_backpack()
+      show_backpack()
     else:
-      return print("Wrong input, try again") 
+      print("Wrong input, try again") 
 
 
 # Fuktion för att slumpa monster ------------------
@@ -196,7 +200,7 @@ def monster():
   input("\nPress enter to fight!")
 
   if player.stre >= monster.monster_stre:
-    print("\nYou have defeated the monster without a sratch!")
+    print("\nYou have defeated the monster without a scratch!")
 
   elif player.stre < monster.monster_stre:
     print("\nYou have lost some health!")
@@ -213,8 +217,9 @@ def monster():
 #  Funktion för boss fighten -----------------------
 
 def boss_fight():
+  input("\n\nPress enter to continue to boss fight: ")
   
-  print(f"\nYou have encountered a {dragon.monster_name}!")
+  print(f"\n\nYou have encountered the {dragon.monster_name}!")
   input("\nPress enter to fight!")
 
   if player.stre >= dragon.monster_stre:
@@ -299,8 +304,9 @@ def random_room():
 for round in range(1, 13):
   player.lvl = round
   if round > 1:
-    print(f"\n\n\nYou have now reached round {round}! Well done!\n\n")
+    print(f"\n\n\n\n\nYou have now reached round {round}! Well done!\n\n")
   first_choice()
+  input("\n\n\nPress enter to continue")
   if player.hp <= 0:
     print("\nGame over, you lost")
     exit()
