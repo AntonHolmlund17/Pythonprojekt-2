@@ -1,33 +1,27 @@
 import random
 
-print(""" Welcome to the dungeon adventurer! Your goal is to survive through 12 levels. Each round you are going to have 3 options to choose from. 
-
-1. Go to the next level
-2. Check your stats
-3. Look in your backpack
-
-By going through to the next level you are going to choose one out of three doors. Behind each door there is a chance of finding a monster, falling in a trap or finding a chest with valuable items.""")
-
 
 #  Klasser  ---------------------------------------
 
-class character:
+# Character klass -------------------------------------
+
+class Character:
     def __init__(self, hp, stre, lvl):
         self.hp = hp
         self.stre = stre
         self.lvl = lvl
 
     def show_stats(self):
-      player.stre = backpack_stre()
+      player.stre = backpack_strength()
       print("\nYour stats are: ")
       print("HP:       " , self.hp)
       print("Strength: " , self.stre)
       print("Level:    " , self.lvl)
 
 
-#  Item class ---------------------------------------
+#  Item klass ---------------------------------------
 
-class item:
+class Item:
     def __init__(self, item_name, item_stre, item_hp):
         self.item_name = item_name
         self.item_stre = item_stre
@@ -35,7 +29,7 @@ class item:
 
 
 
-#  Monster class -----------------------------------
+#  Monster klass -----------------------------------
 
 class monster:
     def __init__(self, monster_name, monster_stre):
@@ -43,9 +37,9 @@ class monster:
         self.monster_stre = monster_stre
 
 
-#   Trap class -------------------------------------
+#   Trap klass -------------------------------------
 
-class trap:
+class Trap:
     def __init__(self, trap_name, trap_stre):
         self.trap_name = trap_name
         self.trap_stre = trap_stre
@@ -53,39 +47,38 @@ class trap:
 
 #  Player ------------------------------------
 
-player = character(10, 0, 0)
+player = Character(10, 0, 0)
 
 
 #  Items -------------------------------------
 
-stone = item("Stone", 1, 0)
-sword = item("Sword", 5, 0)
-axe = item("Axe", 3, 0)
-knife = item( "Knife", 2, 0)
-bow = item( "Arrow and Bow", 3, 0)
+stone = Item("Stone", 1, 0)
+sword = Item("Sword", 5, 0)
+axe = Item("Axe", 3, 0)
+knife = Item( "Knife", 2, 0)
+bow = Item( "Arrow & Bow", 3, 0)
 
-talisman = item("Talisman", 1, 3) 
-gold_ring = item("Gold Ring", 2, 2)
+talisman = Item("Talisman", 1, 3) 
+gold_ring = Item("Gold Ring", 2, 2)
 
-apple = item("Apple", 0, 2)
-cake = item("Cake", 0, 5)
-sandwich = item("Sandwich", 0, 3)
+apple = Item("Apple", 0, 2)
+cake = Item("Cake", 0, 5)
+sandwich = Item("Sandwich", 0, 3)
 
 
 # Placeholder item for backpack ---------------
 
-empty = item("Empty", 0, 0)
+empty = Item("Empty", 0, 0)
 
 items = [stone, stone, sword, axe, knife, knife, bow, talisman, gold_ring, apple, cake, sandwich] 
 
-backpack = [empty, empty, empty, empty, empty,]
+backpack = [empty, empty, empty, empty, empty]
 
-def backpack_stre():
-  backpack_stre = 0
+def backpack_strength():
+  backpack_strength = 0
   for n in range(5):
-    backpack_stre = backpack_stre + backpack[n].item_stre
-  return backpack_stre
-backpack_stre()
+    backpack_strength = backpack_strength + backpack[n].item_stre
+  return backpack_strength
 
 
 #  Monster -------------------------------------
@@ -105,26 +98,18 @@ late_monsters = [orc, minotaur, giant]
 
 #  Trap ------------------------------------
 
-spike_trap = trap("Spike Trap", 2) 
-poison_trap = trap("Poison Trap", 1)
-boulder_trap = trap("Boulder Trap", 3)
-fall_trap = trap("Fall Trap", 2)
+spike_trap = Trap("Spike Trap", 2) 
+poison_trap = Trap("Poison Trap", 1)
+boulder_trap = Trap("Boulder Trap", 3)
+fall_trap = Trap("Fall Trap", 2)
 
 traps = [spike_trap, poison_trap, boulder_trap, fall_trap]
 
-# Värden för skada ska skjusteras senare
-
-
-
-#  Skriva felinput hantering
-#  Kolla vs code för lösning på inventory
-
-# Funktionen visar inventory
 
 # Funktionen byter ut items i ryggsäcken
-def swap(a, b):
-    del backpack[b]
-    backpack.insert(b, a)
+def swap(item, position):
+    del backpack[position]
+    backpack.insert(position, item)
 
 # Funktion för att plocka upp item från kista och byta ut -------------------
 
@@ -146,7 +131,7 @@ def pick_up_item(item):
         print("\nPlease enter a number between 1 and 5\n")
     else:
       print("\nPlease enter a number between 1 and 5\n")
-  player.stre = backpack_stre()
+  player.stre = backpack_strength()
   
 
 # Funktion för att visa backpack  ---------------------------------------
@@ -160,7 +145,7 @@ def show_backpack():
 
 # Funktionen ska fråga vad spelaren vill göra, inventory, backpack eller ett nytt rum. 
 
-def first_choice(): 
+def player_action(): 
 
   while True:
     print("""
@@ -173,11 +158,11 @@ def first_choice():
     
     choice = input("\nWrite here: ")
 
-    if choice == "1" or choice == "next level":
+    if choice == "1" or choice.lower() == "next level":
       return random_room()
-    elif choice == "2" or choice == "stats":
+    elif choice == "2" or choice.lower() == "stats":
       player.show_stats()
-    elif choice == "3" or choice == "backpack": 
+    elif choice == "3" or choice.lower() == "backpack": 
       show_backpack()
     else:
       print("Wrong input, try again") 
@@ -214,6 +199,17 @@ def monster():
     print("\nThe monster defeated you!")
     player.hp = 0
 
+
+# Funktion för att bestäma vad som är bakom dörren ---------- 
+
+def room_choice(a):
+  if a == 1:
+    Trap()
+  elif a <= 3:
+    monster()
+  elif a <= 6:
+    Item()
+
 #  Funktion för boss fighten -----------------------
 
 def boss_fight():
@@ -238,7 +234,7 @@ def boss_fight():
 
 #  Funktion för att slumpa fälla ------------------
 
-def trap():
+def Trap():
   print("\n\n\nYou opened the door and found a trap") 
   trap = random.choice(traps)
 
@@ -252,7 +248,7 @@ def trap():
 
 #   Funktion för att slumpa fram ett föremål ------
 
-def item():
+def Item():
   print("\n \n \nYou opened the door and found a chest.")
 
   item = random.choice(items)
@@ -260,7 +256,7 @@ def item():
 
   choice = input("\nDo you want to pick it up? Yes or No: ")
 
-  while choice.lower() != "yes"  and choice.lower() != "no":
+  while choice.lower() != "yes" and choice.lower() != "no":
     print("\nWrong input, try again.")
     print("\nPlease answer Yes or No")
     choice = input("\nDo you want to pick it up? Yes or No: ")
@@ -271,27 +267,18 @@ def item():
     print("\nYou left the item behind.")
 
 
-    # Funktion för att bestäma vad som är bakom dörren ---------- 
-
-def room_choice(a):
-    if a == 1:
-      trap()
-    elif a <= 3:
-      monster()
-    elif a <= 6:
-      item()
-
-
 #  Funktion som avgör vilket rum som ska öppnas ----------
 
 def random_room():
   room_number = random.randint(1, 6)
 
   print("""
-  In front of you there are 3 doors, behind one is a trap, the other is a chest and behind the third door is a monster. 
-  Choose between door 1, 2 or 3.""") 
+In front of you there are 3 doors, behind one is a trap, 
+the other is a chest and behind the third door is a monster. 
+  
+Choose between door 1, 2 or 3.""") 
 
-  door_choice = input("\nWhich door do you choose? ")
+  door_choice = input("\n\nWhich door do you choose? ")
 
   while door_choice != "1" and door_choice != "2" and door_choice != "3": 
     print("Wrong input, try again") 
@@ -299,15 +286,30 @@ def random_room():
 
   room_choice(room_number)
 
-# Kod som kör spelet
+
+
+
+# Kod som kör spelet ---------------------------------------------------
+
+print(""" Welcome to the dungeon adventurer! Your goal is to survive through 12 levels. 
+Each round you are going to have 3 options to choose from. 
+
+1. Go to the next level
+2. Check your stats
+3. Look in your backpack
+
+By going through to the next level you are going to choose one out of three doors. 
+Behind each door there is a chance of finding a monster, falling in a trap or finding a chest with valuable items.""")
+
 
 for round in range(1, 13):
   player.lvl = round
   if round > 1:
-    print(f"\n\n\n\n\nYou have now reached round {round}! Well done!\n\n")
-  first_choice()
-  input("\n\n\nPress enter to continue")
+    print(f"\n\n\n\n\n\n\n\n\n\nYou have now reached round {round}! Well done!")
+  player_action()
+  input("\n\nPress enter to continue\n\n")
   if player.hp <= 0:
     print("\nGame over, you lost")
     exit()
+
 boss_fight()
